@@ -24,7 +24,7 @@ def handler(event):
     }
 
 def generate_image(prompt, api_key):
-    api_url = "https://api.runpod.ai/v2/jtbfmnx9lsehmo/runsync"
+    api_url = "https://api.runpod.ai/v2/35y47vpnpgk9n9/runsync"
 
     if not api_key:
         print("Error: RUNPOD_API_KEY is not set.")
