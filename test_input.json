@@ -1,9 +1,11 @@
 import requests
 import uuid
 import json
+from PIL import Image
+from io import BytesIO
 
-# Replace with your RunPod.io endpoint URL
-url = "https://api.runpod.io/v1/generate"  # Example endpoint, update to the correct one
+# Replace with your RunPod.io endpoint URL (confirm with API documentation)
+url = "https://api.runpod.io/v1/generate"  # Example endpoint, verify with RunPod documentation
 
 # Set up your headers (replace with your actual API key)
 headers = {
@@ -29,18 +31,25 @@ response = requests.post(url, headers=headers, json=payload)
 
 # Check if the request was successful
 if response.status_code == 200:
+    # Print the entire response to check what fields are available
+    response_data = response.json()
+    print(json.dumps(response_data, indent=2))  # This will help to debug and confirm structure
+
     # Assuming the response contains the image URL or base64 image data
-    image_url = response.json().get('image_url')  # Extract image URL from the response
+    if 'image_url' in response_data:
+        image_url = response_data['image_url']  # Extract image URL from the response
 
-    # Download and display the image if the URL is present
-    if image_url:
+        # Download and display the image if the URL is present
         image_response = requests.get(image_url)
-        from PIL import Image
-        from io import BytesIO
-
         image = Image.open(BytesIO(image_response.content))
         image.show()
+    elif 'base64_image' in response_data:
+        # If the image is returned as base64
+        base64_image_data = response_data['base64_image']
+        image_data = BytesIO(base64.b64decode(base64_image_data))
+        image = Image.open(image_data)
+        image.show()
     else:
-        print("No image URL in the response.")
+        print("No image URL or base64 image data in the response.")
 else:
     print(f"Error: {response.status_code} - {response.text}")
