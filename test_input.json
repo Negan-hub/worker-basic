@@ -1,6 +1,4 @@
 {
-    "input": {
-        "prompt": "John Doe",
-        "seconds": 15
-    }
+  "prompt": "John Doe",
+  "image_url": "https://.../output.png"
 }
