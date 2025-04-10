@@ -8,11 +8,11 @@ API_KEY = "rpa_M7MA3RHQV7WQ9T3BXXKJI6DAIXLSCEKNA4EM48DRcip67o"
 
 # Model endpoint map
 MODEL_ENDPOINTS = {
-    "sd-1.5": "stable-diffusion-v1-5-xxxxxxx",
-    "dreamshaper-v8": "dreamshaper-v8-xxxxxxx",
-    "realistic-vision-v4": "realistic-vision-v4-xxxxxxx",
-    "anything-v5": "anything-v5-xxxxxxx",
-    "openjourney-v4": "openjourney-v4-xxxxxxx"
+    "sd-1.5": "stable-diffusion-v1-5-bxswutwvm2l28s",
+    "dreamshaper-v8": "dreamshaper-v8-bxswutwvm2l28s",
+    "realistic-vision-v4": "realistic-vision-v4-bxswutwvm2l28s",
+    "anything-v5": "anything-v5-bxswutwvm2l28s",
+    "openjourney-v4": "openjourney-v4-bxswutwvm2l28s"
 }
 
 # Default model
