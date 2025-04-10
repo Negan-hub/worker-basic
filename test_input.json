@@ -1,4 +1,7 @@
 {
-  "prompt": "John Doe",
-  "image_url": "https://.../output.png"
+  "input": {
+    "prompt": "John Doe",
+    "seconds": 0,
+    "model": "dreamshaper-v8"
+  }
 }
