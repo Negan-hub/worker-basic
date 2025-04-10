@@ -5,7 +5,7 @@ import base64
 
 # RunPod API Key and Endpoint
 API_KEY = "rpa_M7MA3RHQV7WQ9T3BXXKJI6DAIXLSCEKNA4EM48DRcip67o"
-ENDPOINT_ID = "https://api.runpod.ai/v2/bxswutwvm2l28s/run"  # <-- must be a running image-gen endpoint
+ENDPOINT_ID = "https://api.runpod.ai/v2/bxswutwvm2l28s/runsync"
 
 def handler(event):
     print("Worker Start")
