@@ -5,32 +5,31 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 
 def generate_image(prompt):
-    # 🧪 Dummy image generation for example
-    img = Image.new('RGB', (512, 512), color=(73, 109, 137))
+    # Dummy image with prompt text for demonstration
+    img = Image.new('RGB', (512, 512), color=(30, 30, 30))
     draw = ImageDraw.Draw(img)
-    draw.text((10, 10), prompt, fill=(255, 255, 0))
+    draw.text((20, 250), prompt[:40], fill=(255, 255, 0))  # Draw prompt text
     return img
 
 def handler(event):
-    print(f"Worker Start")
+    print("Worker Start")
     input = event['input']
     
     prompt = input.get('prompt', 'No prompt provided')
     seconds = input.get('seconds', 0)
 
     print(f"Received prompt: {prompt}")
-    print(f"Sleeping for {seconds} seconds...")
     time.sleep(seconds)
 
-    # 🖼 Generate an image from the prompt
+    # Generate dummy image
     img = generate_image(prompt)
 
-    # 🔁 Convert the image to base64
+    # Convert image to base64
     buffered = BytesIO()
     img.save(buffered, format="PNG")
-    img_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+    img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-    # ✅ Return the base64 image
+    # Return base64 image in output
     return {
         "image": img_base64
     }
