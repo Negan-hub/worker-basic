@@ -23,8 +23,10 @@ def handler(event):
     }
 
 def generate_image(prompt):
-    api_url = "https://api.runpod.ai/v2/jtbfmnx9lsehmo/runsync"
-    api_key = os.getenv("rpa_M7MA3RHQV7WQ9T3BXXKJI6DAIXLSCEKNA4EM48DRcip67o")
+    endpoint_id = "jtbfmnx9lsehmo"
+    api_url = f"https://api.runpod.ai/v2/cefewmzuxzvft1/run"
+    status_url = f"https://api.runpod.ai/v2/cefewmzuxzvft1/status"
+    api_key = os.getenv("RUNPOD_API_KEY")
 
     if not api_key:
         print("API key is missing. Set RUNPOD_API_KEY in the environment.")
@@ -42,26 +44,46 @@ def generate_image(prompt):
     }
 
     try:
+        # Step 1: Submit the job
         response = requests.post(api_url, headers=headers, json=data)
+        if response.status_code != 200:
+            print(f"Failed to submit job: {response.status_code} - {response.text}")
+            return f"Error: {response.status_code}"
 
-        if response.status_code == 200:
-            result = response.json()
+        job_id = response.json().get("id")
+        if not job_id:
+            print("No job ID returned from RunPod")
+            return "Error: No job ID"
 
-            if result.get("status") == "COMPLETED":
+        print(f"Job submitted. ID: {job_id}")
+
+        # Step 2: Poll for job completion
+        for attempt in range(20):  # Poll for up to ~60 seconds (20 * 3s)
+            time.sleep(3)
+            poll_response = requests.get(f"{status_url}/{job_id}", headers=headers)
+
+            if poll_response.status_code != 200:
+                print(f"Polling failed: {poll_response.status_code} - {poll_response.text}")
+                continue
+
+            result = poll_response.json()
+            status = result.get("status")
+
+            print(f"Polling attempt {attempt+1}: status = {status}")
+
+            if status == "COMPLETED":
                 output = result.get("output")
                 if isinstance(output, dict) and "image_url" in output:
                     return output["image_url"]
                 elif isinstance(output, list) and len(output) > 0:
                     return output[0].get("image", "No image URL found")
                 else:
-                    print("Unexpected response format.")
-                    return "Error: Invalid output format"
-            else:
-                print(f"Job returned status: {result.get('status')}")
-                return f"Error: Job status {result.get('status')}"
-        else:
-            print(f"HTTP error: {response.status_code} - {response.text}")
-            return f"Error: HTTP {response.status_code}"
+                    return "Error: Unexpected output format"
+            elif status == "FAILED":
+                return "Error: Job failed"
+
+        return "Error: Job did not complete in time"
+
     except Exception as e:
         print(f"Exception during image generation: {e}")
         return f"Error: {str(e)}"
