@@ -23,13 +23,9 @@ def handler(event):
     }
 
 def generate_image(prompt):
-    api_url = "https://api.runpod.ai/v2/jtbfmnx9lsehmo/runsync"  # Replace with your actual endpoint ID
-    api_key = os.getenv("RUNPOD_API_KEY")  # Load from environment variable
-
-    if not api_key:
-        print("API key is missing. Set RUNPOD_API_KEY in the environment.")
-        return "Error: API key missing"
-
+    api_url = "https://api.runpod.ai/v2/jtbfmnx9lsehmo/runsync"
+    api_key = "rpa_M7MA3RHQV7WQ9T3BXXKJI6DAIXLSCEKNA4EM48DRcip67o"  # Replace with your actual API key
+    
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
