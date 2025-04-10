@@ -24,8 +24,12 @@ def handler(event):
 
 def generate_image(prompt):
     api_url = "https://api.runpod.ai/v2/jtbfmnx9lsehmo/runsync"
-    api_key = "rpa_M7MA3RHQV7WQ9T3BXXKJI6DAIXLSCEKNA4EM48DRcip67o"  # Replace with your actual API key
-    
+    api_key = os.getenv("rpa_M7MA3RHQV7WQ9T3BXXKJI6DAIXLSCEKNA4EM48DRcip67o")
+
+    if not api_key:
+        print("API key is missing. Set RUNPOD_API_KEY in the environment.")
+        return "Error: API key missing"
+
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {api_key}"
@@ -53,6 +57,7 @@ def generate_image(prompt):
                     print("Unexpected response format.")
                     return "Error: Invalid output format"
             else:
+                print(f"Job returned status: {result.get('status')}")
                 return f"Error: Job status {result.get('status')}"
         else:
             print(f"HTTP error: {response.status_code} - {response.text}")
