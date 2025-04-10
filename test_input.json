@@ -1,6 +1,46 @@
-{
-    "input": {
-        "prompt": "John Doe",
-        "seconds": 15
+import requests
+import uuid
+import json
+
+# Replace with your RunPod.io endpoint URL
+url = "https://api.runpod.io/v1/generate"  # Example endpoint, update to the correct one
+
+# Set up your headers (replace with your actual API key)
+headers = {
+    "Authorization": "Bearer your-api-key",  # Replace with your actual API key
+    "Content-Type": "application/json"
+}
+
+# Generate a unique request ID for this API call
+request_id = str(uuid.uuid4())  # Generate a unique request ID
+
+# Set up the request payload with the correct fields
+payload = {
+    "requestId": request_id,  # Include the unique request ID
+    "input": {  # Include the 'input' field with the necessary details
+        "prompt": "A cyberpunk cat riding a motorcycle in Tokyo at night",
+        "num_images": 1,
+        "size": "512x512"
     }
 }
+
+# Make the API call to generate the image
+response = requests.post(url, headers=headers, json=payload)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Assuming the response contains the image URL or base64 image data
+    image_url = response.json().get('image_url')  # Extract image URL from the response
+
+    # Download and display the image if the URL is present
+    if image_url:
+        image_response = requests.get(image_url)
+        from PIL import Image
+        from io import BytesIO
+
+        image = Image.open(BytesIO(image_response.content))
+        image.show()
+    else:
+        print("No image URL in the response.")
+else:
+    print(f"Error: {response.status_code} - {response.text}")
