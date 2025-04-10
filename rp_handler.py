@@ -46,9 +46,10 @@ def handler(event):
         json={"input": {"prompt": prompt}}
     )
 
+    # Check if the response is valid JSON
     try:
         res_json = response.json()
-        print("Response:", res_json)
+        print("Response:", res_json)  # Log the parsed JSON
 
         output = res_json.get("output")
         if isinstance(output, dict):
@@ -70,6 +71,14 @@ def handler(event):
             "image_base64": img_base64,
             "status": res_json.get("status"),
             "workerId": res_json.get("workerId")
+        }
+
+    except ValueError:
+        # If response isn't JSON, print the raw content for debugging
+        print("Raw response text:", response.text)
+        return {
+            "error": "Invalid response format (non-JSON response)",
+            "response_text": response.text
         }
 
     except Exception as e:
