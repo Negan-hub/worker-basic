@@ -26,8 +26,8 @@ def handler(event):
 
 def generate_image(prompt, api_key):
     endpoint_id = "35y47vpnpgk9n9"
-    run_url = f"https://api.runpod.ai/v2/{endpoint_id}/run"
-    status_url_base = f"https://api.runpod.ai/v2/{endpoint_id}/status/"
+    run_url = f"https://api.runpod.ai/v2/z15jet1uh56jvp/run"
+    status_url_base = f"https://api.runpod.ai/v2/z15jet1uh56jvp/status/"
 
     if not api_key:
         print("❌ Error: RUNPOD_API_KEY is not set.")
