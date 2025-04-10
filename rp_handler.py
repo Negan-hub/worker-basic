@@ -51,34 +51,43 @@ def handler(event):
         res_json = response.json()
         print("Response:", res_json)  # Log the parsed JSON
 
-        output = res_json.get("output")
-        if isinstance(output, dict):
-            image_url = output.get("image_url") or output.get("url")
+        # Check if the response contains a message instead of the image URL
+        message = res_json.get("message", "")
+        if message == "Finished.":
+            # If the response is just a "Finished" message, we need to check if an image URL exists
+            output = res_json.get("output")
+            if isinstance(output, dict):
+                image_url = output.get("image_url") or output.get("url")
+            else:
+                image_url = output
+
+            if not image_url:
+                raise Exception("No image URL returned from model.")
+
+            # Download and encode image
+            img_bytes = requests.get(image_url).content
+            img_base64 = base64.b64encode(img_bytes).decode('utf-8')
+
+            return {
+                "prompt": prompt,
+                "model_used": model_key,
+                "image_url": image_url,
+                "image_base64": img_base64,
+                "status": res_json.get("status"),
+                "workerId": res_json.get("workerId")
+            }
+
         else:
-            image_url = output
-
-        if not image_url:
-            raise Exception("No image URL returned from model.")
-
-        # Download and encode image
-        img_bytes = requests.get(image_url).content
-        img_base64 = base64.b64encode(img_bytes).decode('utf-8')
-
-        return {
-            "prompt": prompt,
-            "model_used": model_key,
-            "image_url": image_url,
-            "image_base64": img_base64,
-            "status": res_json.get("status"),
-            "workerId": res_json.get("workerId")
-        }
+            # If the response is not what we expect, return an error with the message
+            raise Exception(f"Unexpected response message: {message}")
 
     except ValueError:
         # If response isn't JSON, print the raw content for debugging
         print("Raw response text:", response.text)
         return {
             "error": "Invalid response format (non-JSON response)",
-            "response_text": response.text
+            "response_text": response.text,
+            "status_code": response.status_code
         }
 
     except Exception as e:
